@@ -20,7 +20,7 @@ namespace PacMan
         public List<Enemy> Enemies;
         public Map Map { get; set; }
         public CollisionDetector _collisionDetector;
-        private AStarPathfinder? _pathfinder;
+        private AStarPathfinder _pathfinder;
         private Engine()
         {
             Enemies = new List<Enemy>();

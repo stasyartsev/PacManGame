@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace PacMan
 {
-    abstract class GameElement : DrawableShape, Deserializable
+    public abstract class GameElement : DrawableShape, Deserializable
     {
         public Rectangle Rect { get; set; }
         

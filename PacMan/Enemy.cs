@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace PacMan
 {
-    public class Enemy: GamePlayer
+    class Enemy: GamePlayer
     {
         public enum Position
         {

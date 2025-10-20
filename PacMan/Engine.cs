@@ -20,7 +20,10 @@ namespace PacMan
         public List<Enemy> Enemies;
         public Map Map { get; set; }
         public CollisionDetector _collisionDetector;
-        private AStarPathfinder _pathfinder;
+        private AStarPathfinder? _pathfinder;
+        private readonly Dictionary<Enemy, List<AStarNode>> _enemyPaths = new Dictionary<Enemy, List<AStarNode>>();
+        private int _frameCounter = 0;
+        private const int PathRecalculationInterval = 30; // Recalculate every 30 frames
         private Engine()
         {
             Enemies = new List<Enemy>();
@@ -65,47 +68,36 @@ namespace PacMan
             {
 
             }
-            if (_pathfinder != null)
+            _frameCounter++;
+            if (_pathfinder != null && _frameCounter % PathRecalculationInterval == 0)
             {
                 foreach (Enemy elem in Enemies)
                 {
                     var startNode = new AStarNode((int)elem.PositionX, (int)elem.PositionY);
                     var endNode = new AStarNode((int)MainPlayer.PositionX, (int)MainPlayer.PositionY);
-                    var path = _pathfinder.FindPath(startNode, endNode);
-                    if (path != null && path.Count > 1)
+                    _enemyPaths[elem] = _pathfinder.FindPath(startNode, endNode);
+                }
+            }
+
+            foreach (var enemyPath in _enemyPaths)
+            {
+                var elem = enemyPath.Key;
+                var path = enemyPath.Value;
+                if (path != null && path.Count > 1)
+                {
+                    var nextNode = path[1];
+                    double dx = nextNode.X - elem.PositionX;
+                    double dy = nextNode.Y - elem.PositionY;
+                    Direction nextEnemyDirection;
+                    if (Math.Abs(dx) > Math.Abs(dy))
                     {
-                        var nextNode = path[1];
-                        double dx = nextNode.X - elem.PositionX;
-                        double dy = nextNode.Y - elem.PositionY;
-
-                        Direction nextEnemyDirection;
-
-                        if (Math.Abs(dx) > Math.Abs(dy))
-                        {
-                            // Move horizontally
-                            if (dx > 0)
-                            {
-                                nextEnemyDirection = Direction.RIGHT;
-                            }
-                            else
-                            {
-                                nextEnemyDirection = Direction.LEFT;
-                            }
-                        }
-                        else
-                        {
-                            // Move vertically
-                            if (dy > 0)
-                            {
-                                nextEnemyDirection = Direction.DOWN;
-                            }
-                            else
-                            {
-                                nextEnemyDirection = Direction.UP;
-                            }
-                        }
-                        ChangeEnemyDirection(elem, nextEnemyDirection);
+                        nextEnemyDirection = dx > 0 ? Direction.RIGHT : Direction.LEFT;
                     }
+                    else
+                    {
+                        nextEnemyDirection = dy > 0 ? Direction.DOWN : Direction.UP;
+                    }
+                    ChangeEnemyDirection(elem, nextEnemyDirection);
                 }
             }
             foreach (MovableShape p in Movables)

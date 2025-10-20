@@ -23,8 +23,8 @@ type:Player; X:35; Y:110
 
 Enemy
 type:Enemy; X:310; Y:110
-type:Enemy; X:35; Y:215
-type:Enemy; X:310; Y:215
+type:Enemy; X:20; Y:20
+type:Enemy; X:350; Y:230
 
 Upper Wall
 

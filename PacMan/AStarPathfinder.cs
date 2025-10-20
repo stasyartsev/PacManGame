@@ -14,8 +14,16 @@ namespace PacMan
 
         public AStarPathfinder(Map map)
         {
-            _width = map.Obstacles.Max(o => (int)o.PositionX + o.Size);
-            _height = map.Obstacles.Max(o => (int)o.PositionY + o.Size);
+            if (map.Obstacles.Any())
+            {
+                _width = map.Obstacles.Max(o => (int)o.PositionX + o.Size);
+                _height = map.Obstacles.Max(o => (int)o.PositionY + o.Size);
+            }
+            else
+            {
+                _width = 400; // Default width
+                _height = 300; // Default height
+            }
             _walkable = new bool[_width, _height];
             for (int y = 0; y < _height; y++)
             {
@@ -42,25 +50,27 @@ namespace PacMan
 
         public List<AStarNode> FindPath(AStarNode start, AStarNode end)
         {
-            var openList = new List<AStarNode>();
-            var closedList = new List<AStarNode>();
-            openList.Add(start);
+            var openList = new PriorityQueue<AStarNode>();
+            var closedList = new HashSet<AStarNode>();
+            var openListLookup = new Dictionary<AStarNode, int>();
+
+            openList.Enqueue(start, 0);
+            openListLookup[start] = 0;
 
             while (openList.Count > 0)
             {
-                var currentNode = openList.OrderBy(n => n.F).First();
+                var currentNode = openList.Dequeue();
 
                 if (currentNode.X == end.X && currentNode.Y == end.Y)
                 {
                     return ReconstructPath(currentNode);
                 }
 
-                openList.Remove(currentNode);
                 closedList.Add(currentNode);
 
                 foreach (var neighbor in GetNeighbors(currentNode))
                 {
-                    if (closedList.Any(n => n.X == neighbor.X && n.Y == neighbor.Y))
+                    if (closedList.Contains(neighbor))
                     {
                         continue;
                     }
@@ -71,19 +81,15 @@ namespace PacMan
                     }
 
                     var newG = currentNode.G + 1;
-                    var existingNode = openList.FirstOrDefault(n => n.X == neighbor.X && n.Y == neighbor.Y);
 
-                    if (existingNode == null)
+                    if (!openListLookup.ContainsKey(neighbor) || newG < openListLookup[neighbor])
                     {
                         neighbor.G = newG;
                         neighbor.H = Math.Abs(neighbor.X - end.X) + Math.Abs(neighbor.Y - end.Y);
                         neighbor.Parent = currentNode;
-                        openList.Add(neighbor);
-                    }
-                    else if (newG < existingNode.G)
-                    {
-                        existingNode.G = newG;
-                        existingNode.Parent = currentNode;
+
+                        openListLookup[neighbor] = newG;
+                        openList.Enqueue(neighbor, neighbor.F);
                     }
                 }
             }

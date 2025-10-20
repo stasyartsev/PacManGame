@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace PacMan
 {
-    public class Pellet: GameElement
+    class Pellet: GameElement
     {
         public Pellet()
         {

@@ -7,7 +7,7 @@ using System.Drawing;
 using System.Windows.Forms;
 namespace PacMan
 {
-   public abstract class GamePlayer:DrawableShape, MovableShape, Deserializable
+   abstract class GamePlayer:DrawableShape, MovableShape, Deserializable
     {
        private Rectangle mRect;
        public Rectangle Rect { get { mRect= new Rectangle((int)PositionX, (int)PositionY, Size, Size); return mRect; } set { } }

@@ -20,5 +20,19 @@ namespace PacMan
             X = x;
             Y = y;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is AStarNode other)
+            {
+                return X == other.X && Y == other.Y;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return (X << 16) | Y;
+        }
     }
 }

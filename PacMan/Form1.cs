@@ -86,7 +86,7 @@ namespace PacMan
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            string file = @"C:\Users\stas1\source\repos\PacManGame\map.txt";
+            string file = @"C:\Users\Stassilla\Documents\Visual Studio 2013\Projects\PacMan\map.txt";
             mEngine.ReadFromFile(file);
         }
     }

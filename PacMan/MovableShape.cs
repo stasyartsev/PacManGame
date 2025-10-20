@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PacMan
 {
-    public enum Direction { UP, DOWN, LEFT, RIGHT, NO_DIRECTION };
+    enum Direction { UP, DOWN, LEFT, RIGHT, NO_DIRECTION };
     
     interface MovableShape
     {

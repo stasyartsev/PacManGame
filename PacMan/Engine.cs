@@ -20,7 +20,7 @@ namespace PacMan
         public List<Enemy> Enemies;
         public Map Map { get; set; }
         public CollisionDetector _collisionDetector;
-        private readonly AStarPathfinder _pathfinder;
+        private AStarPathfinder? _pathfinder;
         private Engine()
         {
             Enemies = new List<Enemy>();
@@ -28,7 +28,6 @@ namespace PacMan
             Drawables = new List<DrawableShape>();
             Movables = new List<MovableShape>();
             Map = Map.GetInstance();
-            _pathfinder = new AStarPathfinder(Map);
         }
         public static Engine GetInstance()
         {
@@ -66,44 +65,47 @@ namespace PacMan
             {
 
             }
-            foreach (Enemy elem in Enemies)
+            if (_pathfinder != null)
             {
-                var startNode = new AStarNode((int)elem.PositionX, (int)elem.PositionY);
-                var endNode = new AStarNode((int)MainPlayer.PositionX, (int)MainPlayer.PositionY);
-                var path = _pathfinder.FindPath(startNode, endNode);
-                if (path != null && path.Count > 1)
+                foreach (Enemy elem in Enemies)
                 {
-                    var nextNode = path[1];
-                    double dx = nextNode.X - elem.PositionX;
-                    double dy = nextNode.Y - elem.PositionY;
-
-                    Direction nextEnemyDirection;
-
-                    if (Math.Abs(dx) > Math.Abs(dy))
+                    var startNode = new AStarNode((int)elem.PositionX, (int)elem.PositionY);
+                    var endNode = new AStarNode((int)MainPlayer.PositionX, (int)MainPlayer.PositionY);
+                    var path = _pathfinder.FindPath(startNode, endNode);
+                    if (path != null && path.Count > 1)
                     {
-                        // Move horizontally
-                        if (dx > 0)
+                        var nextNode = path[1];
+                        double dx = nextNode.X - elem.PositionX;
+                        double dy = nextNode.Y - elem.PositionY;
+
+                        Direction nextEnemyDirection;
+
+                        if (Math.Abs(dx) > Math.Abs(dy))
                         {
-                            nextEnemyDirection = Direction.RIGHT;
+                            // Move horizontally
+                            if (dx > 0)
+                            {
+                                nextEnemyDirection = Direction.RIGHT;
+                            }
+                            else
+                            {
+                                nextEnemyDirection = Direction.LEFT;
+                            }
                         }
                         else
                         {
-                            nextEnemyDirection = Direction.LEFT;
+                            // Move vertically
+                            if (dy > 0)
+                            {
+                                nextEnemyDirection = Direction.DOWN;
+                            }
+                            else
+                            {
+                                nextEnemyDirection = Direction.UP;
+                            }
                         }
+                        ChangeEnemyDirection(elem, nextEnemyDirection);
                     }
-                    else
-                    {
-                        // Move vertically
-                        if (dy > 0)
-                        {
-                            nextEnemyDirection = Direction.DOWN;
-                        }
-                        else
-                        {
-                            nextEnemyDirection = Direction.UP;
-                        }
-                    }
-                    ChangeEnemyDirection(elem, nextEnemyDirection);
                 }
             }
             foreach (MovableShape p in Movables)
@@ -155,6 +157,8 @@ namespace PacMan
             MainPlayer = Map.MainPlayer;
             Drawables.Add(MainPlayer);
             Movables.Add(MainPlayer);
+
+            _pathfinder = new AStarPathfinder(Map);
         }
 
         internal bool WillCollideWall(Player player)

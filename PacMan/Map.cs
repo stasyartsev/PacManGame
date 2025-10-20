@@ -7,7 +7,7 @@ using System.IO;
 
 namespace PacMan
 {
-    class Map
+    public class Map
     {
 
         private static Map _Instance = null;

@@ -11,7 +11,6 @@ namespace PacMan
 {
     class Engine
     {
-        private static readonly Random _random = new Random();
         private long prevFrameTime;
         private static Engine _Instance = null;
         public List<DrawableShape> Drawables;
@@ -67,19 +66,37 @@ namespace PacMan
             }
             foreach (Enemy elem in Enemies)
             {
-                int randomInt = _random.Next(0, 10);
-              //  System.Diagnostics.Debug.WriteLine(randomInt);
+                // Simple chasing logic
+                double dx = MainPlayer.PositionX - elem.PositionX;
+                double dy = MainPlayer.PositionY - elem.PositionY;
 
-                if (randomInt == 2)
+                Direction nextEnemyDirection;
+
+                if (Math.Abs(dx) > Math.Abs(dy))
                 {
-                    Direction nextEnemyDirection = (Direction)_random.Next(0, 4);
-                    System.Diagnostics.Debug.WriteLine(nextEnemyDirection);
-
-                    ChangeEnemyDirection(elem, nextEnemyDirection);
-                    System.Diagnostics.Debug.WriteLine(nextEnemyDirection);
-                    // _collisionDetector.CheckEnemyCollision(Map.Obstacles, elem);
+                    // Move horizontally
+                    if (dx > 0)
+                    {
+                        nextEnemyDirection = Direction.RIGHT;
+                    }
+                    else
+                    {
+                        nextEnemyDirection = Direction.LEFT;
+                    }
                 }
-                //_collisionDetector.CheckEnemyCollision(Map.Obstacles, elem);
+                else
+                {
+                    // Move vertically
+                    if (dy > 0)
+                    {
+                        nextEnemyDirection = Direction.DOWN;
+                    }
+                    else
+                    {
+                        nextEnemyDirection = Direction.UP;
+                    }
+                }
+                ChangeEnemyDirection(elem, nextEnemyDirection);
             }
             foreach (MovableShape p in Movables)
             {

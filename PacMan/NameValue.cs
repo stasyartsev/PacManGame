@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PacMan
 {
-    class NameValue
+    public class NameValue
     {
         public string Name { get; set; }
         public string Value { get; set; }

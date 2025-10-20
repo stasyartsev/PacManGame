@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace PacMan
 {
-    class Obstacle: GameElement
+    public class Obstacle: GameElement
     {
                 public Obstacle()
         {

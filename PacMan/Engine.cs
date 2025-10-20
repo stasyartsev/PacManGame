@@ -11,6 +11,7 @@ namespace PacMan
 {
     class Engine
     {
+        private static readonly Random _random = new Random();
         private long prevFrameTime;
         private static Engine _Instance = null;
         public List<DrawableShape> Drawables;
@@ -66,15 +67,13 @@ namespace PacMan
             }
             foreach (Enemy elem in Enemies)
             {
-                Random rndInt = new Random();
-                int randomInt = rndInt.Next(0, 10);
+                int randomInt = _random.Next(0, 10);
               //  System.Diagnostics.Debug.WriteLine(randomInt);
 
                 if (randomInt == 2)
                 {
-                    Random rndDir = new Random();
-                    Direction nextEnemyDirection = (Direction)rndDir.Next(0, 6);
-                    System.Diagnostics.Debug.WriteLine(rndDir);
+                    Direction nextEnemyDirection = (Direction)_random.Next(0, 4);
+                    System.Diagnostics.Debug.WriteLine(nextEnemyDirection);
 
                     ChangeEnemyDirection(elem, nextEnemyDirection);
                     System.Diagnostics.Debug.WriteLine(nextEnemyDirection);
